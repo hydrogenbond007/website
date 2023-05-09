@@ -12,28 +12,33 @@ TODO: THIS IS ALL VERY MUCH A DRAFT, REVISE EVERYTHING
 [revm]: https://crates.io/crates/revm
 [crate-validation]: https://risc0.github.io/ghpages/dev/crate-validation/index.html
 [small-transaction]: https://etherscan.io/tx/0x671a3b40ecb7d51b209e68392df2d38c098aae03febd3a88be0f1fa77725bbd7
-[precompile-transaction]: https://etherscan.io/tx/0x671a3b40ecb7d51b209e68392df2d38c098aae03febd3a88be0f1fa77725bbd7
+[precompile-transaction]: 0x600d18676aef439ec6ba33d143b78878a520682be7fd8331c74bdf672988a2b1
 [precompile-contract]: https://etherscan.io/address/0x6b175474e89094c44da98b954eedeac495271d0f#code
 [Bonsai]: https://www.bonsai.xyz/
 [bonsai-waitlist]: https://fmree464va4.typeform.com/to/t6hZD54Z
+[segment-docs]: https://docs.rs/risc0-zkvm/latest/risc0_zkvm/struct.Segment.html
+[session-docs]: https://docs.rs/risc0-zkvm/latest/risc0_zkvm/struct.Session.html
+[cycles-docs]: https://docs.rs/risc0-zkvm/latest/risc0_zkvm/prove/struct.Prover.html#structfield.cycles
+[segment-limit-docs]: https://docs.rs/risc0-zkvm/latest/risc0_zkvm/struct.ExecutorEnvBuilder.html#method.segment_limit_po2
+[session-receipt-docs]: https://docs.rs/risc0-zkvm/latest/risc0_zkvm/receipt/struct.SessionReceipt.html
 
 At RISC Zero, we envision a future with boundless computation built on zero knowledge proofs.
 Today [TODO: Confirm], we took a major step toward implementing this vision with tools available to all.
 We published v0.15 of the RISC Zero zkVM, which includes one of my favorite features: Continuations.
 
-In the context of our zkVM, a continuation is a mechanism for splitting a large program into several smaller segments that can be computed and proven independently.
+In the context of our zkVM, continuations are a mechanism for splitting a large program into several smaller segments that can be computed and proven independently.
 This has many benefits, for instance:
-* Parallelizing and distributing the workload
-* Enabling pausing and resuming a zkVM
-* Reducing memory requirements by using small segment sizes
-I discuss each of these a bit more below, but the main benefit I'll focus on today is that with continuations, programs are no longer bounded by a fixed maximal length of computation.
-With continuations, programs can run for however many cycles it takes to get the job done.
+* Parallelizing proving
+* Enabling pausing and resuming a zkVM (similar to a “warm start” on AWS Lambda)
+* Limiting memory overhead to a fixed requirement, regardless of program size
+I discuss each of these a bit more at the end of this post, but the main benefit I'll focus on today is that with continuations, programs are no longer bounded by a fixed maximal length of computation.
+With continuations, programs can run for however many instructions it takes to get the job done.
 
 But what does an unbounded cycle count enable in practice?
-The pithy answer is that the possiblities are endless — our zkVM is general purpose and can run anything that compiles to RISC-V (e.g. Rust, but also C++, Go, etc.), and now, just like the device you're reading this on, our zkVM will execute programs for however long they take to complete.
+The pithy answer is that the possiblities are endless — our zkVM is general purpose and can run anything that [compiles to RISC-V][crate-validation] (e.g. Rust, but also C++, Go, etc.), and now, just like the device you're reading this on, our zkVM will execute programs for however long they take to complete.
 Yet this endless possibility is comprised of innumerable specific examples.
 For instance, with continuations, you can run an EVM engine inside the RISC Zero zkVM, and prove the state changes caused by an Ethereum transaction.
-By "you," I mean you, personally right now.
+By "you," I mean you, personally, right now, on your laptop.
 Whenever you like, you can head on over to [our EVM example][evm-example-github], check out the source code, and run it for yourself!
 In the meantime, keep reading for a deeper explanation on what continuations enable, including how we use them to prove the results of Ethereum transactions.
 
@@ -61,16 +66,16 @@ With continuations, any Ethereum transaction can be proven on the RISC Zero zkVM
 
 # What Is a Continuation?
 
-I mentioned at the start of this post that a continuation is "a mechanism for splitting a large program into several smaller segments that can be computed and proven independently."
+I mentioned at the start of this post that continuations are "a mechanism for splitting a large program into several smaller segments that can be computed and proven independently."
 This mechanism works by tracking the state of the zkVM at the start and end of each of these smaller segments, in the form of Merkle trees of the memory image (plus the program counter).
 This lets us compare the ending state of one segment to the starting state of the next.
 
-A zkVM program is split into segments automatically, based on the cycle count.
+A zkVM program is split into [segments][segment-docs] automatically, based on the [cycle count][cycles-docs].
 If the program would run for more cycles than allowed in a single segment, it is automatically split.
-We use the term "session" to mean sequence of segments where the first segment was initiated by the user and the final segment was terminated by the user (i.e., instead of being one of these automatically generated splits).
-Thus, while segments have arbitrary boundaries determined automatically to stay within the cycle cap, sessions instead represent semantic boundaries, both starting and ending at the request of a user.
+We use the term "[session][session-docs]" to mean sequence of segments where the first segment was initiated by the user and the final segment was terminated by the user (i.e., instead of being one of these automatically generated splits).
+Thus, while segments have arbitrary boundaries determined automatically to stay within the per-segment [cycle limit][segment-limit-docs], sessions instead represent semantic boundaries, both starting and ending at the request of a user.
 
-A session receipt consists of multiple segment receipts, and is validated by confirming that:
+A [session receipt][session-receipt-docs] consists of multiple segment receipts, and is validated by confirming that:
 1. each segment receipt is valid,
 2. the starting receipt of each segment matches the ending state of the prior segment, and
 3. the initial state (or `image_id`) matches what the validator expects (that is, that session is running the same code the validator wants to validate).
@@ -98,17 +103,17 @@ This has a couple of advantages.
 First, the model construction and weight loading could be performed prior to the user providing inputs, reducing the latency between inputs and outputs.
 Moreover, this initial setup phase could be performed once and paused, and then resumed multiple times for different inputs, saving the work of re-executing the shared setup.
 
-## Reduce memory
+## Fixed Memory Requirements
 Prior to continuations, when a zkVM program took twice as many cycles, it roughly doubled the runtime and _also_ roughly doubled the memory requirements.
-With continuations, memory requirements largely depend on segment length rather than total program length, saving memory and ending this doubling heuristic for memory requirements.
+With continuations, memory requirements depend on segment length rather than total program length, so that programs of arbitrary execution length require a fixed amount of memory to run.
 
 # Continuations and Bonsai
 
-Continuations are a powerful tool, but there are still a number of rough edges to using them easily and efficiently.
-We are rapidly developing and expanding the set of tools RISC Zero offers to enable boundless zero-knowledge computation, and I want to mention some of our further work to realize the full potential of continuations.
+Continuations are a powerful tool. We want to simplify the complexities of continuations, and zero-knowledge proofs more generally, as much as possible. To this end, we are working on Bonsai, and so here I want to mention a few of the complications we expect [Bonsai] to simplify.
 
 For one, while there is the potential for substantial latency gains through parallelization, orchestrating the distribution of a program's segments is not built in to the zkVM code.
-Also, when using continuations each segment produces its own receipt.
+For another, we do not currently use recursion to simplify receipt management.
+That is, when using continuations each segment produces its own receipt.
 We have included functions that confirm that these receipts all stitch together properly and jointly prove the full program; nevertheless, currently, for a complete proof using continuations, each of these receipts must be provided to the verifier in order for the proof to be valid.
 
 We are working on [Bonsai], which we believe addresses these challenges and more.
