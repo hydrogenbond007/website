@@ -65,12 +65,15 @@ I mentioned at the start of this post that a continuation is "a mechanism for sp
 This mechanism works by tracking the state of the zkVM at the start and end of each of these smaller segments, in the form of Merkle trees of the memory image (plus the program counter).
 This lets us compare the ending state of one segment to the starting state of the next.
 
-A zkVM program is split into segments automatically, based on the cycle count. If the program would run for more cycles than allowed in a single segment, it is automatically split. We use the term "session" to mean sequence of segments where the first segment was initiated by the user and the final segment was terminated by the user (i.e., instead of being one of these automatically generated splits). Thus, while segments have arbitrary boundaries determined automatically to stay within the cycle cap, sessions instead represent semantic boundaries, both starting and ending at the request of a user.
+A zkVM program is split into segments automatically, based on the cycle count.
+If the program would run for more cycles than allowed in a single segment, it is automatically split.
+We use the term "session" to mean sequence of segments where the first segment was initiated by the user and the final segment was terminated by the user (i.e., instead of being one of these automatically generated splits).
+Thus, while segments have arbitrary boundaries determined automatically to stay within the cycle cap, sessions instead represent semantic boundaries, both starting and ending at the request of a user.
 
 A session receipt consists of multiple segment receipts, and is validated by confirming that:
-1. Each segment receipt is valid,
-2. that the starting receipt of each segment matches the ending state of the prior segment, and
-3. that the initial state (or `image_id`) matches what the validator expects (that is, that session is running the same code the validator wants to validate).
+1. each segment receipt is valid,
+2. the starting receipt of each segment matches the ending state of the prior segment, and
+3. the initial state (or `image_id`) matches what the validator expects (that is, that session is running the same code the validator wants to validate).
 
 # Benefits of Continuations
 
@@ -84,7 +87,10 @@ This gives a plan for proving each segment that is independent of the contents o
 Thus, the hard work of proving the segments can be distributed amongst many systems, parallelizing the workload and reducing overall latency of the full proof.
 
 ## Pause-Resume
-With continuations, a zkVM program can be paused and resumed. When describing segments, I mentioned that they lasted until the user asked for them to stop. This can be a traditional halt, indicating the end of computation. But it can also be a pause, which let's the user say "I want to do some computation now, and then come back at some later time and pick up where I left off."
+With continuations, a zkVM program can be paused and resumed.
+When describing segments, I mentioned that they lasted until the user asked for them to stop.
+This can be a traditional halt, indicating the end of computation.
+But it can also be a pause, which let's the user say "I want to do some computation now, and then come back at some later time and pick up where I left off."
 
 For example, imagine a zkML workload in which an ML model is constructed, its weights are loaded, input data is provided, and an output is computed.
 In this example, the zkVM could be paused after the weights are loaded, just before input is provided.
