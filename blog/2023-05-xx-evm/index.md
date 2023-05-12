@@ -58,8 +58,8 @@ and we have an EVM example using [revm].
 
 The [revm] crate is a Rust-based EVM interepreter.
 Like [most Rust crates][crate-validation], the revm crate can be run in the RISC Zero zkVM.
-We put together [an example][evm-example-github] which does exactly that.
-When you point our example at an Ethereum transaction, it will use [revm] to execute the transaction to compute the new state.
+Our [example][evm-example-github] does exactly that.
+When you point it at an Ethereum transaction, our example will use [revm] to execute the transaction to compute the new state.
 It will then create a receipt containing the difference in state after the transaction has been executed and a zero-knowledge proof that this result is accurate.
 
 Before continuations, this process worked only for small transactions.
