@@ -33,7 +33,7 @@ In the context of our zkVM, continuations are a mechanism for splitting a large 
 This has many benefits, for instance:
 * Parallelizing proving
 * Enabling pausing and resuming a zkVM (similar to a “warm start” on AWS Lambda)
-* Limiting memory overhead to a fixed requirement, regardless of program size
+* Limiting memory requirements to a fixed amount, regardless of program size
 I discuss each of these a bit more at the end of this post, but the main benefit I'll focus on today is that with continuations, programs are no longer bounded by a fixed maximal length of computation.
 With continuations, programs can run for however many instructions it takes to get the job done.
 
