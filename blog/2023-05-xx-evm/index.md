@@ -9,6 +9,9 @@ TODO: THIS IS ALL VERY MUCH A DRAFT, REVISE EVERYTHING
 
 [zkevm-vs-zkvm]: https://www.risczero.com/blog/zkVM
 [evm-example-github]: https://github.com/risc0/risc0/tree/main/examples/evm
+[odra-zkvm-evm]: https://odra.dev/blog/evm-at-risc0/
+[SputnikVM]: https://github.com/rust-blockchain/evm/
+[zkPoEX]: https://github.com/zkoranges/zkPoEX
 [revm]: https://crates.io/crates/revm
 [crate-validation]: https://risc0.github.io/ghpages/dev/crate-validation/index.html
 [small-transaction]: https://etherscan.io/tx/0x671a3b40ecb7d51b209e68392df2d38c098aae03febd3a88be0f1fa77725bbd7
@@ -48,7 +51,10 @@ Erik recently described how [the RISC Zero zkVM differs from a zkEVM][zkevm-vs-z
 That post is worth reading in full, but I'm going to gloss over the details and nuances and instead pull a single key quote:
 > On the zkVM, you can run just about any software that runs on a computer rather than anything that can run on Ethereum.
 The EVM is software that runs on a computer.
-This quote, then, suggests that the EVM can be run inside our zkVM — and indeed it can.
+This quote, then, suggests that the EVM can be run inside our zkVM — and indeed it can. In fact, a few different teams have done this already:
+[Odra wrote a proof of concept][odra-zkvm-evm] with [SputnikVM],
+[zkPoEX] also uses SputnikVM to produce proofs of exploits,
+and we have an EVM example using [revm].
 
 The [revm] crate is a Rust-based EVM interepreter.
 Like [most Rust crates][crate-validation], the revm crate can be run in the RISC Zero zkVM.
