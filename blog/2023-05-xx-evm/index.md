@@ -62,9 +62,9 @@ However, since we hadn't yet added continuations to the zkVM, we also published 
 
 But now, with continuations, we no longer have this limitation.
 You can, for instance, prove [this transaction][precompile-transaction] for [a contract][precompile-contract] using the fairly heavy `ecrecover` precompile.
-On a 12th generation Intel laptop with an RTX 3050, this took us about 10 minutes and about 10 GB of memory.
+On my M1 Max MacBook Pro, this took about 12 minutes and about 12 GB of memory.
 The runtime will of course vary from system to system, and depends on the complexity of the program.
-The memory requirements, however, should be similar regardless of what system you run the proof on, and also regardless of what you are proving.
+The memory requirements, however, should be similar regardless of what system you run the proof on, and also regardless of the complexity of what you are proving.
 
 And to be clear, it’s not just that this particular transaction can now be proven on the zkVM. It’s all transactions:
 With continuations, any Ethereum transaction can be proven on the RISC Zero zkVM using our EVM demo — there is no limit on transaction size.
