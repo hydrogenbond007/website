@@ -7,7 +7,7 @@ tags: [zk, evm]
 
 TODO: THIS IS ALL VERY MUCH A DRAFT, REVISE EVERYTHING
 
-[zkevm-vs-zkvm]: TODO
+[zkevm-vs-zkvm]: https://www.risczero.com/blog/zkVM
 [evm-example-github]: https://github.com/risc0/risc0/tree/main/examples/evm
 [revm]: https://crates.io/crates/revm
 [crate-validation]: https://risc0.github.io/ghpages/dev/crate-validation/index.html
