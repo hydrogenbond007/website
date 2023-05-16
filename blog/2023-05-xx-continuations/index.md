@@ -2,10 +2,8 @@
 slug: continuations
 title: Using Continuations to Prove Any EVM Transaction
 authors: [timzerrell]
-tags: [zk, evm]
+tags: [zk, continuations, evm]
 ---
-
-TODO: THIS IS ALL VERY MUCH A DRAFT, REVISE EVERYTHING
 
 [zkevm-vs-zkvm]: https://www.risczero.com/blog/zkVM
 [evm-example-github]: https://github.com/risc0/risc0/tree/main/examples/evm
@@ -26,7 +24,7 @@ TODO: THIS IS ALL VERY MUCH A DRAFT, REVISE EVERYTHING
 [session-receipt-docs]: https://docs.rs/risc0-zkvm/latest/risc0_zkvm/receipt/struct.SessionReceipt.html
 
 At RISC Zero, we envision a future with boundless computation built on zero knowledge proofs.
-Today [TODO: Confirm], we took a major step toward implementing this vision with tools available to all.
+Today, we took a major step toward implementing this vision with tools available to all.
 We published v0.15 of the RISC Zero zkVM, which includes one of my favorite features: Continuations.
 
 In the context of our zkVM, continuations are a mechanism for splitting a large program into several smaller segments that can be computed and proven independently.
@@ -34,6 +32,7 @@ This has many benefits, for instance:
 * Parallelizing proving
 * Enabling pausing and resuming a zkVM (similar to a “warm start” on AWS Lambda)
 * Limiting memory requirements to a fixed amount, regardless of program size
+
 I discuss each of these a bit more at the end of this post, but the main benefit I'll focus on today is that with continuations, programs are no longer bounded by a fixed maximal length of computation.
 With continuations, programs can run for however many instructions it takes to get the job done.
 
@@ -50,20 +49,21 @@ In the meantime, keep reading for a deeper explanation on what continuations ena
 Erik recently described how [the RISC Zero zkVM differs from a zkEVM][zkevm-vs-zkvm].
 That post is worth reading in full, but I'm going to gloss over the details and nuances and instead pull a single key quote:
 > On the zkVM, you can run just about any software that runs on a computer rather than anything that can run on Ethereum.
+
 The EVM is software that runs on a computer.
 This quote, then, suggests that the EVM can be run inside our zkVM — and indeed it can. In fact, a few different teams have done this already:
 [Odra wrote a proof of concept][odra-zkvm-evm] with [SputnikVM],
 [zkPoEX] also uses SputnikVM to produce proofs of exploits,
 and we have an EVM example using [revm].
 
-The [revm] crate is a Rust-based EVM interepreter.
+The [revm] crate is a Rust-based EVM interpreter.
 Like [most Rust crates][crate-validation], the revm crate can be run in the RISC Zero zkVM.
 Our [example][evm-example-github] does exactly that.
 When you point it at an Ethereum transaction, our example will use [revm] to execute the transaction to compute the new state.
 It will then create a receipt containing the difference in state after the transaction has been executed and a zero-knowledge proof that this result is accurate.
 
 Before continuations, this process worked only for small transactions.
-Therefore, when we published our EVM example we used [this transaction][small-transation] as a demonstration, which we were able to prove without hitting the cycle cap.
+Therefore, when we published our EVM example we used [this transaction][small-transaction] as a demonstration, which we were able to prove without hitting the cycle cap.
 However, since we hadn't yet added continuations to the zkVM, we also published our EVM example with a warning that it wouldn't work for all transactions, and in particular was unlikely to be able to prove transactions with elliptic curve precompiles.
 
 But now, with continuations, we no longer have this limitation.
