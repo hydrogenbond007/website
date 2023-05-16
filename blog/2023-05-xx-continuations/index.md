@@ -44,7 +44,7 @@ By "you," I mean you, personally, right now, on your laptop.
 Whenever you like, you can head on over to [our EVM example][evm-example-github], check out the source code, and run it for yourself!
 In the meantime, keep reading for a deeper explanation on what continuations enable, including how we use them to prove the results of Ethereum transactions.
 
-# Running the EVM on the RISC Zero zkVM
+## Running the EVM on the RISC Zero zkVM
 
 Erik recently described how [the RISC Zero zkVM differs from a zkEVM][zkevm-vs-zkvm].
 That post is worth reading in full, but I'm going to gloss over the details and nuances and instead pull a single key quote:
@@ -75,7 +75,7 @@ The memory requirements, however, should be similar regardless of what system yo
 And to be clear, it’s not just that this particular transaction can now be proven on the zkVM. It’s all transactions:
 With continuations, any Ethereum transaction can be proven on the RISC Zero zkVM using our EVM demo — there is no limit on transaction size.
 
-# What Is a Continuation?
+## What Is a Continuation?
 
 I mentioned at the start of this post that continuations are "a mechanism for splitting a large program into several smaller segments that can be computed and proven independently."
 This mechanism works by tracking the state of the zkVM at the start and end of each of these smaller segments, in the form of Merkle trees of the memory image (plus the program counter).
@@ -91,18 +91,18 @@ A [session receipt][session-receipt-docs] consists of multiple segment receipts,
 2. the starting receipt of each segment matches the ending state of the prior segment, and
 3. the initial state (or `image_id`) matches what the validator expects (that is, that session is running the same code the validator wants to validate).
 
-# Benefits of Continuations
+## Benefits of Continuations
 
 As discussed with the EVM example, one of the most immediately apparent benefits of continuations is that you can now run a RISC Zero zkVM program for as long as you need to get the job done.
 But continuations enable more capabilities than just this, and I want to touch on three I mentioned in the introduction: parallelization, pausing, and memory.
 
-## Parallelize
+### Parallelize
 These small segments can be distributed to many computers to parallelize the workload and reduce latency.
 The plan for where a zkVM program is split into segments and what work is done in each segment is computed ahead of proving by an "execution" phase.
 This gives a plan for proving each segment that is independent of the contents of all of the other segments.
 Thus, the hard work of proving the segments can be distributed amongst many systems, parallelizing the workload and reducing overall latency of the full proof.
 
-## Pause-Resume
+### Pause-Resume
 With continuations, a zkVM program can be paused and resumed.
 When describing segments, I mentioned that they lasted until the user asked for them to stop.
 This can be a traditional halt, indicating the end of computation.
@@ -114,11 +114,11 @@ This has a couple of advantages.
 First, the model construction and weight loading could be performed prior to the user providing inputs, reducing the latency between inputs and outputs.
 Moreover, this initial setup phase could be performed once and paused, and then resumed multiple times for different inputs, saving the work of re-executing the shared setup.
 
-## Fixed Memory Requirements
+### Fixed Memory Requirements
 Prior to continuations, when a zkVM program took twice as many cycles, it roughly doubled the runtime and _also_ roughly doubled the memory requirements.
 With continuations, memory requirements depend on segment length rather than total program length, so that programs of arbitrary execution length require a fixed amount of memory to run.
 
-# Continuations and Bonsai
+## Continuations and Bonsai
 
 Continuations are a powerful tool. We want to simplify the complexities of continuations, and zero-knowledge proofs more generally, as much as possible. To this end, we are working on Bonsai, and so here I want to mention a few of the complications we expect [Bonsai] to simplify.
 
