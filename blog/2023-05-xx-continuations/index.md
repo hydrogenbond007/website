@@ -13,7 +13,7 @@ tags: [zk, continuations, evm]
 [revm]: https://crates.io/crates/revm
 [crate-validation]: https://risc0.github.io/ghpages/dev/crate-validation/index.html
 [small-transaction]: https://etherscan.io/tx/0x671a3b40ecb7d51b209e68392df2d38c098aae03febd3a88be0f1fa77725bbd7
-[precompile-transaction]: 0x600d18676aef439ec6ba33d143b78878a520682be7fd8331c74bdf672988a2b1
+[precompile-transaction]: https://etherscan.io/tx/0x600d18676aef439ec6ba33d143b78878a520682be7fd8331c74bdf672988a2b1
 [precompile-contract]: https://etherscan.io/address/0x6b175474e89094c44da98b954eedeac495271d0f#code
 [Bonsai]: https://www.bonsai.xyz/
 [bonsai-waitlist]: https://fmree464va4.typeform.com/to/t6hZD54Z
