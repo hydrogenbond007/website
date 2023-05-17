@@ -73,7 +73,7 @@ The runtime will of course vary from system to system, and depends on the length
 The memory requirements, however, should be similar regardless of what system you run the proof on, and also regardless of the length of your program.
 
 And to be clear, it’s not just that this particular transaction can now be proven on the zkVM. It’s all transactions:
-With continuations, any Ethereum transaction can be proven on the RISC Zero zkVM using our EVM demo — there is no limit on transaction size.
+with continuations, any Ethereum transaction can be proven on the RISC Zero zkVM using our EVM demo — there is no limit on transaction size.
 
 ## What Is a Continuation?
 
