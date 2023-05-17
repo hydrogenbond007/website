@@ -123,9 +123,12 @@ With continuations, memory requirements depend on segment length rather than tot
 Continuations are a powerful tool. We want to simplify the complexities of continuations, and zero-knowledge proofs more generally, as much as possible. To this end, we are working on Bonsai, and so here I want to mention a few of the complications we expect [Bonsai] to simplify.
 
 For one, while there is the potential for substantial latency gains through parallelization, orchestrating the distribution of a program's segments is not built in to the zkVM code.
-For another, we do not currently use recursion to simplify receipt management.
-That is, when using continuations each segment produces its own receipt.
-We have included functions that confirm that these receipts all stitch together properly and jointly prove the full program; nevertheless, to generate a complete proof using continuations at this time, each of these receipts must be provided to the verifier in order for the proof to be valid.
+
+For another, we currently only support _flat continuations_ and not _rollup continuations_.
+With flat continuations, each segment produces its own receipt.
+Each of these receipts needs to be individually verified, and while we have helper functions to prove the overall program the required verification work still increases with execution length.
+Rollup continuations would use proofs of verification to recursively rollup these individual segment proofs.
+The result would be that only a single receipt would be necessary for verification, and verification time would be constant regardless of execution length.
 
 We are working on [Bonsai], which we believe addresses these challenges and more.
 We expect [Bonsai] to make the power of zero knowledge proofs and continuations easily accessible.
