@@ -125,7 +125,7 @@ Continuations are a powerful tool. We want to simplify the complexities of conti
 For one, while there is the potential for substantial latency gains through parallelization, orchestrating the distribution of a program's segments is not built in to the zkVM code.
 For another, we do not currently use recursion to simplify receipt management.
 That is, when using continuations each segment produces its own receipt.
-We have included functions that confirm that these receipts all stitch together properly and jointly prove the full program; nevertheless, currently, for a complete proof using continuations, each of these receipts must be provided to the verifier in order for the proof to be valid.
+We have included functions that confirm that these receipts all stitch together properly and jointly prove the full program; nevertheless, to generate a complete proof using continuations at this time, each of these receipts must be provided to the verifier in order for the proof to be valid.
 
 We are working on [Bonsai], which we believe addresses these challenges and more.
 We expect [Bonsai] to make the power of zero knowledge proofs and continuations easily accessible.
