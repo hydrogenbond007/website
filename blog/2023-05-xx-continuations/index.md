@@ -37,7 +37,7 @@ I discuss each of these a bit more at the end of this post, but the main benefit
 With continuations, programs can run for however many instructions it takes to get the job done.
 
 But what does an unbounded cycle count enable in practice?
-The pithy answer is that the possiblities are endless — our zkVM is general purpose and can run anything that [compiles to RISC-V][crate-validation] (e.g. Rust, but also C++, Go, etc.), and now, just like the device you're reading this on, our zkVM will execute programs for however long they take to complete.
+The pithy answer is that the possiblities are endless — our zkVM is general purpose and [can run][crate-validation] anything that compiles to RISC-V (e.g. Rust, but also C++, Go, etc.), and now, just like the device you're reading this on, our zkVM will execute programs for however long they take to complete.
 Yet this endless possibility is comprised of innumerable specific examples.
 For instance, with continuations, you can run an EVM engine inside the RISC Zero zkVM, and prove the state changes caused by an Ethereum transaction.
 By "you," I mean you, personally, right now, on your laptop.
