@@ -67,7 +67,7 @@ Therefore, when we published our EVM example we used [this transaction][small-tr
 However, since we hadn't yet added continuations to the zkVM, we also published our EVM example with a warning that it wouldn't work for all transactions, and in particular was unlikely to be able to prove transactions with elliptic curve precompiles.
 
 But now, with continuations, we no longer have this limitation.
-You can, for instance, prove [this transaction][precompile-transaction] for [a contract][precompile-contract] using the fairly heavy `ecrecover` precompile.
+You can, for instance, prove [this fairly heavy transaction][precompile-transaction] for a [contract][precompile-contract] using the `ecrecover` precompile and 5 `KECCAK256`.
 On my M1 Max MacBook Pro, this took about 12 minutes and about 12 GB of memory.
 The runtime will of course vary from system to system, and depends on the complexity of the program.
 The memory requirements, however, should be similar regardless of what system you run the proof on, and also regardless of the complexity of what you are proving.
