@@ -106,7 +106,7 @@ Thus, the hard work of proving the segments can be distributed amongst many syst
 With continuations, a zkVM program can be paused and resumed.
 When describing segments, I mentioned that they lasted until the user asked for them to stop.
 This can be a traditional halt, indicating the end of computation.
-But it can also be a pause, which let's the user say "I want to do some computation now, and then come back at some later time and pick up where I left off."
+But it can also be a pause, which lets the user say "I want to do some computation now, and then come back at some later time and pick up where I left off."
 
 For example, imagine a zkML workload in which an ML model is constructed, its weights are loaded, input data is provided, and an output is computed.
 In this example, the zkVM could be paused after the weights are loaded, just before input is provided.
