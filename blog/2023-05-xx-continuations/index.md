@@ -122,7 +122,7 @@ With continuations, memory requirements depend on segment length rather than tot
 
 Continuations are a powerful tool. We want to simplify the complexities of continuations, and zero-knowledge proofs more generally, as much as possible. To this end, we are working on Bonsai, and so here I want to mention a few of the complications we expect [Bonsai] to simplify.
 
-For one, while there is the potential for substantial latency gains through parallelization, orchestrating the distribution of a program's segments is not built in to the zkVM code.
+For one, while there is the potential for substantial latency improvement through parallelization, orchestrating the distribution of a program's segments is not built into the zkVM code.
 
 For another, we currently only support _flat continuations_ and not _rollup continuations_.
 With flat continuations, each segment produces its own receipt.
