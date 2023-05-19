@@ -38,7 +38,7 @@ With continuations, programs can run for however many instructions it takes to g
 
 But what does an unbounded cycle count enable in practice?
 The pithy answer is that the possibilities are endless — our zkVM is general purpose and [can run][crate-validation] anything that compiles to RISC-V (e.g. Rust, but also C++, Go, etc.), and now, just like the device you're reading this on, our zkVM will execute programs for however long they take to complete.
-Yet this endless possibility is comprised of innumerable specific examples.
+This possibility, while endless, is comprised of innumerable specific examples.
 For instance, with continuations, you can run an EVM engine inside the RISC Zero zkVM, and prove the state changes caused by an Ethereum transaction.
 By "you," I mean you, personally, right now, on your laptop.
 Whenever you like, you can head on over to [our EVM example][evm-example-github], check out the source code, and run it for yourself!
@@ -63,17 +63,17 @@ When you point it at an Ethereum transaction, our example will use [revm] to exe
 It will then create a receipt containing the difference in state after the transaction has been executed and a zero-knowledge proof that this result is accurate.
 
 Before continuations, this process worked only for small transactions.
-Therefore, when we published our EVM example we used [this transaction][small-transaction] as a demonstration, which we were able to prove without hitting the cycle cap.
+Therefore, when we published our EVM example, we used [this small transaction][small-transaction] as a demonstration so we could prove the transaction without hitting the cycle cap.
 However, since we hadn't yet added continuations to the zkVM, we also published our EVM example with a warning that it wouldn't work for all transactions, and in particular was unlikely to be able to prove transactions with elliptic curve precompiles.
 
-But now, with continuations, we no longer have this limitation.
+With continuations, we no longer have this limitation.
 You can, for instance, prove [this fairly heavy transaction][precompile-transaction] for a [contract][precompile-contract] using the `ecrecover` precompile and 5 `KECCAK256`.
 On my M1 Max MacBook Pro, this took about 12 minutes and about 12 GB of memory.
 The runtime will of course vary from system to system, and depends on the length of the program execution.
 The memory requirements, however, should be similar regardless of what system you run the proof on, and also regardless of the length of your program.
 
 And to be clear, it’s not just that this particular transaction can now be proven on the zkVM. It’s all transactions:
-with continuations, any Ethereum transaction can be proven on the RISC Zero zkVM using our EVM demo — there is no limit on transaction size.
+with continuations, any Ethereum transaction can be proven on the RISC Zero zkVM using our EVM demo, and there is no limit on transaction size.
 
 ## What Is a Continuation?
 
@@ -81,9 +81,9 @@ I mentioned at the start of this post that continuations are "a mechanism for sp
 This mechanism works by tracking the state of the zkVM at the start and end of each of these smaller segments, in the form of Merkle trees of the memory image (plus the program counter).
 This lets us compare the ending state of one segment to the starting state of the next.
 
-A zkVM program is split into [segments][segment-docs] automatically, based on the [cycle count][cycles-docs].
+A zkVM program is automatically split into [segments][segment-docs], based on the [cycle count][cycles-docs].
 If the program would run for more cycles than allowed in a single segment, it is automatically split.
-We use the term "[session][session-docs]" to mean sequence of segments where the first segment was initiated by the user and the final segment was terminated by the user (i.e., instead of being one of these automatically generated splits).
+We use the term "[session][session-docs]" to mean sequence of segments where the first segment was initiated by the user and the final segment was terminated by the user (as opposed to being terminated by an automatically generated split).
 Thus, while segments have arbitrary boundaries determined automatically to stay within the per-segment [cycle limit][segment-limit-docs], sessions instead represent semantic boundaries, both starting and ending at the request of a user.
 
 A [session receipt][session-receipt-docs] consists of multiple segment receipts, and is validated by confirming that:
@@ -94,7 +94,7 @@ A [session receipt][session-receipt-docs] consists of multiple segment receipts,
 ## Benefits of Continuations
 
 As discussed with the EVM example, one of the most immediately apparent benefits of continuations is that you can now run a RISC Zero zkVM program for as long as you need to get the job done.
-But continuations enable more capabilities than just this, and I want to touch on three I mentioned in the introduction: parallelization, pausing, and memory.
+But continuations enable more capabilities than just this. I want to touch on three I mentioned in the introduction: parallelization, pausing, and memory.
 
 ### Parallelize
 These small segments can be distributed to many computers to parallelize the workload and reduce latency.
@@ -126,10 +126,10 @@ For one, while there is the potential for substantial latency gains through para
 
 For another, we currently only support _flat continuations_ and not _rollup continuations_.
 With flat continuations, each segment produces its own receipt.
-Each of these receipts needs to be individually verified, and while we have helper functions to prove the overall program the required verification work still increases with execution length.
+Each of these receipts needs to be individually verified, and while we have helper functions to prove the overall program, the required verification work still increases with execution length.
 Rollup continuations would use proofs of verification to recursively rollup these individual segment proofs.
 The result would be that only a single receipt would be necessary for verification, and verification time would be constant regardless of execution length.
 
 We are working on [Bonsai], which we believe addresses these challenges and more.
-We expect [Bonsai] to make the power of zero knowledge proofs and continuations easily accessible.
+We expect [Bonsai] to make the power of zero-knowledge proofs and continuations easily accessible.
 If you're interested, [sign up for the Bonsai waitlist][bonsai-waitlist]!
