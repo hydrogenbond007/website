@@ -25,7 +25,7 @@ tags: [zk, continuations, evm]
 
 At RISC Zero, we envision a future with boundless computation built on zero knowledge proofs.
 Today, we took a major step toward implementing this vision with tools available to all.
-We published v0.15 of the RISC Zero zkVM, which includes one of my favorite features: Continuations.
+We published v0.15 of the RISC Zero zkVM, which includes one of my favorite features: continuations.
 
 In the context of our zkVM, continuations are a mechanism for splitting a large program into several smaller segments that can be computed and proven independently.
 This has many benefits, for instance:
